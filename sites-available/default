@@ -1,56 +1,29 @@
 server {
-        root /var/www/html;
-        server_name huynhhanh.com;
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-        location / {
-                proxy_pass http://localhost:3039;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-        }
+    server_name huynhhanh.com www.huynhhanh.com;
 
-    listen [::]:443 ssl ipv6only=on; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/huynhhanh.com-0001/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/huynhhanh.com-0001/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-
+    return 301 https://huynhhanh.com$request_uri;
 }
-
 server {
-    server_name api.huynhhanh.com;
+    root /var/www/html;
+    server_name huynhhanh.com;
 
     location / {
-            #proxy_pass http://localhost:6789;
-        proxy_pass https://localhost:8080;
+        proxy_pass http://localhost:3039;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/huynhhanh.com-0001/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/huynhhanh.com-0001/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-}
-
-server {
-    if ($host = huynhhanh.com) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-        listen 80 default_server;
-        listen [::]:80 default_server;
-
-        server_name huynhhanh.com;
-    return 404; # managed by Certbot
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/huynhhanh.com-0001/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/huynhhanh.com-0001/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
 
 }
@@ -58,57 +31,26 @@ server {
 server {
     listen 80;
     listen [::]:80;
-    server_name www.huynhhanh.com;
-
-    return 301 https://huynhhanh.com$request_uri;
-}
-
-
-server {
-    if ($host = api.huynhhanh.com) {
-            return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-    listen 80;
-    server_name api.huynhhanh.com;
-    return 404; # managed by Certbot
-
-
-}
-
-server {
-
-    listen [::]:443 ssl; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
     server_name blog.huynhhanh.com;
+
+    return 301 https://blog.huynhhanh.com$request_uri;
+}
+server {
+    listen [::]:443 ssl; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        server_name blog.huynhhanh.com;
 
     ssl_certificate /etc/letsencrypt/live/blog.huynhhanh.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/blog.huynhhanh.com/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
-    location / {
-        proxy_pass http://localhost:8000; # Proxy các yêu cầu đến ứng dụng của bạn
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-}
-server {
-    if ($host = blog.huynhhanh.com) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-
-
-        listen 80 ;
-        listen [::]:80 ;
-    server_name blog.huynhhanh.com;
-    return 404; # managed by Certbot
-
+        location / {
+            proxy_pass http://localhost:8000; # Proxy các yêu cầu đến ứng dụng của bạn
+                proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
 
 }
